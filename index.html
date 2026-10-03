@@ -1,0 +1,644 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>goawaters — built for stillness</title>
+<link href="fonts.css" rel="stylesheet">
+<style>
+:root{
+  --red:#A84E22;--forest:#263830;--charcoal:#2A2520;--cream:#F5F0E8;
+  --sage:#7A9E8E;--sand:#C8C0B8;--stone:#F0EBE2;--grey:#6A6258;
+  --white:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Cormorant Garamond',serif;background:var(--cream);color:var(--charcoal);overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 40px;display:flex;align-items:flex-start;justify-content:space-between;transition:all .4s ease}
+nav.solid{background:rgba(245,240,232,.97);backdrop-filter:blur(8px);padding:14px 40px;box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.brand{display:flex;flex-direction:column;gap:0}
+.brand-name{font-family:'EB Garamond',serif;font-size:29px;letter-spacing:.12em;text-transform:lowercase;color:#fff;line-height:1;transition:color .4s}
+nav.solid .brand-name{color:var(--charcoal)}
+.brand-tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;letter-spacing:.15em;color:rgba(255,255,255,.88);margin-top:4px;transition:color .4s}
+nav.solid .brand-tag{color:var(--grey);font-size:17px}
+.nav-links{display:flex;align-items:center;gap:32px;padding-top:6px}
+.nav-links li{list-style:none}
+.nav-links a{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.82);text-decoration:none;transition:color .3s}
+nav.solid .nav-links a{color:var(--grey)}
+.nav-links a:hover{color:#fff}
+nav.solid .nav-links a:hover{color:var(--charcoal)}
+.nav-btn{border:1px solid rgba(255,255,255,.4)!important;padding:8px 18px!important;color:rgba(255,255,255,.9)!important}
+nav.solid .nav-btn{border-color:rgba(168,78,34,.35)!important;color:var(--red)!important}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding-top:8px}
+.ham span{width:22px;height:1px;background:#fff;transition:background .4s}
+nav.solid .ham span{background:var(--charcoal)}
+.mob-menu{display:none;position:fixed;inset:0;background:var(--forest);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:32px}
+.mob-menu.open{display:flex}
+.mob-menu a{font-family:'EB Garamond',serif;font-size:28px;letter-spacing:.1em;color:var(--cream);text-decoration:none}
+.mob-close{position:absolute;top:24px;right:28px;font-size:28px;color:var(--cream);cursor:pointer;background:none;border:none}
+
+/* HERO */
+#hero{height:100vh;min-height:600px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero-img{position:absolute;inset:0;z-index:0}
+.hero-img img{width:100%;height:100%;object-fit:cover;object-position:center}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,24,22,.55) 0%,rgba(26,24,22,.35) 50%,rgba(26,24,22,.65) 100%);z-index:1}
+.hero-content{position:relative;z-index:2;text-align:center;padding:0 24px}
+.hero-name{font-family:'EB Garamond',serif;font-size:clamp(64px,11vw,110px);letter-spacing:.12em;text-transform:lowercase;color:#fff;line-height:1;margin-bottom:0}
+.hero-line{display:block;margin:14px auto 16px}
+.hero-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.8vw,30px);letter-spacing:.08em;color:rgba(255,255,255,.92);margin-bottom:8px;font-weight:300;position:relative;top:-16px}
+.hero-sub span{display:block;line-height:1.8}
+.hero-breath{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,2vw,20px);letter-spacing:.18em;color:rgba(255,255,255,.65);margin-top:12px}
+.scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px}
+.scroll-hint span{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.3em;color:rgba(255,255,255,.4)}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(255,255,255,.4),transparent)}
+
+/* SHARED */
+.wrap{max-width:1100px;margin:0 auto;padding:0 40px}
+.label{font-family:'Jost',sans-serif;font-weight:600;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:14px}
+.heading{font-family:'EB Garamond',serif;font-size:clamp(32px,4vw,52px);letter-spacing:.04em;color:var(--charcoal);line-height:1.12;font-weight:400}
+.rule{display:block;width:52px;height:1px;background:var(--red);margin:20px 0;opacity:.7}
+.rule.c{margin:20px auto}
+.para{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,1.6vw,19px);line-height:1.8;color:var(--grey);max-width:640px}
+.fi{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s ease}
+.fi.vis{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}
+
+/* ABOUT */
+#about{padding:90px 0 12px;background:#fff}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.aimg{aspect-ratio:3/4;overflow:hidden;position:relative;background:#C4A882}
+.aimg img{width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .7s ease;display:block}
+.aimg:hover img{transform:scale(1.03)}
+@media(min-width:861px){.aimg{top:-138px}}
+.acap{position:absolute;bottom:20px;left:20px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(255,255,255,.7);letter-spacing:.08em}
+.about-text{padding:20px 0}
+.belief-statement{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(17px,1.8vw,21px);line-height:1.75;color:var(--charcoal);margin:24px 0 28px;padding-left:20px;border-left:2px solid var(--red)}
+.values-list{margin-top:28px;display:flex;flex-direction:column;gap:10px}
+.values-list li{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--grey);list-style:none;padding-left:16px;position:relative}
+.values-list li::before{content:'';position:absolute;left:0;top:50%;width:6px;height:1px;background:var(--red)}
+
+/* BELIEF */
+#belief{padding:110px 0;background:var(--cream)}
+.belief-inner{max-width:660px;margin:0 auto}
+.belief-inner .para{margin-top:0}
+.belief-close{margin-top:34px!important}
+
+/* ECOSYSTEM */
+#ecosystem{padding:70px 0 12px;background:var(--stone)}
+.eco-intro{text-align:center;max-width:600px;margin:0 auto 64px}
+.eco-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(0,0,0,.06)}
+.eco-card{background:#fff;padding:48px 36px;display:flex;flex-direction:column;gap:16px;transition:background .3s}
+.eco-card:hover{background:var(--forest)}
+.eco-card:hover .eco-num,.eco-card:hover .eco-title,.eco-card:hover .eco-body,.eco-card:hover .eco-link{color:var(--cream)}
+.eco-card:hover .eco-rule{background:var(--sage)}
+.eco-num{font-family:'Jost',sans-serif;font-weight:600;font-size:13px;letter-spacing:.22em;color:var(--red);transition:color .3s}
+.eco-title{font-family:'EB Garamond',serif;font-size:26px;letter-spacing:.06em;color:var(--charcoal);transition:color .3s}
+.eco-rule{width:32px;height:1px;background:var(--red);transition:background .3s}
+.eco-body{font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.75;color:var(--grey);transition:color .3s}
+.eco-link{font-family:'Jost',sans-serif;font-weight:300;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-top:8px;transition:color .3s}
+
+/* RETREATS */
+#retreats{padding:70px 0 12px;background:#fff}
+.retreats-intro{text-align:center;max-width:560px;margin:0 auto 72px}
+.retreat-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(0,0,0,.06)}
+.retreat-card{background:var(--stone);padding:52px 44px;display:flex;flex-direction:column;gap:14px}
+.retreat-tag{font-family:'Jost',sans-serif;font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--red)}
+.retreat-title{font-family:'EB Garamond',serif;font-size:28px;letter-spacing:.06em;color:var(--charcoal)}
+.retreat-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:700;font-size:20px;letter-spacing:.06em;color:var(--charcoal)}
+.retreat-rule{width:36px;height:1px;background:var(--red);margin:4px 0}
+.retreat-body{font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.8;color:var(--grey)}
+.retreat-cta{font-family:'Jost',sans-serif;font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-top:8px;cursor:pointer}
+
+/* HOMES */
+#homes{padding:36px 0 12px;background:var(--cream)}
+.homes-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;margin-top:52px}
+.home-text .para{max-width:520px}
+.home-features{display:flex;flex-direction:column;gap:8px;margin-top:24px}
+.home-feature{font-family:'Jost',sans-serif;font-weight:300;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--grey);padding-left:16px;position:relative}
+.home-feature::before{content:'';position:absolute;left:0;top:50%;width:6px;height:1px;background:var(--red)}
+.home-locations{margin-top:40px;padding:32px;background:#fff;border-left:2px solid var(--red)}
+.home-locations-title{font-family:'Jost',sans-serif;font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:12px}
+.home-locs{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--charcoal);line-height:1.9}
+.home-img-stack{position:relative}
+.home-img-main{aspect-ratio:4/5;overflow:hidden;background:#C4A882}
+.home-img-main img{width:100%;height:100%;object-fit:cover;display:block}
+.home-img-thumb{position:absolute;bottom:-28px;left:-28px;width:52%;aspect-ratio:4/3;overflow:hidden;background:#B0A898;border:4px solid var(--cream)}
+.home-img-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.home-disclaimer{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.1em;color:var(--sand);margin-top:8px}
+
+/* PHILOSOPHY */
+#how{padding:36px 0 12px;background:#fff}
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-top:0}
+.how-intro{padding-bottom:0}
+.how-principles{display:flex;flex-direction:column;gap:0}
+.principle{padding:28px 0;border-bottom:1px solid rgba(0,0,0,.07);display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:start}
+.principle:last-child{border-bottom:none}
+.p-num{font-family:'Jost',sans-serif;font-weight:200;font-size:10px;letter-spacing:.2em;color:var(--red);padding-top:4px}
+.p-body{display:flex;flex-direction:column;gap:6px}
+.p-title{font-family:'EB Garamond',serif;font-size:20px;letter-spacing:.04em;color:var(--charcoal)}
+.p-text{font-family:'Cormorant Garamond',serif;font-size:15px;line-height:1.75;color:var(--grey)}
+
+/* PRACTITIONERS */
+#practitioners{padding:70px 0 12px;background:var(--stone)}
+.prac-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:52px}
+.prac-list{display:flex;flex-direction:column;gap:10px;margin-top:28px}
+.prac-item{font-family:'Jost',sans-serif;font-weight:300;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--grey);padding-left:16px;position:relative}
+.prac-item::before{content:'';position:absolute;left:0;top:50%;width:6px;height:1px;background:var(--red)}
+.prac-note{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;line-height:1.75;color:var(--grey);margin-top:28px}
+.prac-cta{display:inline-block;margin-top:32px;font-family:'Jost',sans-serif;font-weight:600;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);border:1px solid rgba(168,78,34,.3);padding:16px 32px;text-decoration:none;transition:all .3s}
+.prac-cta:hover{background:var(--red);color:#fff}
+.prac-img{aspect-ratio:4/5;overflow:hidden;background:var(--forest)}
+.prac-img img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+
+/* GOA SECTION */
+#goa{padding:70px 0 12px;background:var(--cream)}
+.goa-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.goa-photos{position:relative;height:480px}
+.gpa{position:absolute;top:0;right:0;width:72%;aspect-ratio:4/3;overflow:hidden;background:#B0A898}
+.gpa img{width:100%;height:100%;object-fit:cover;display:block}
+.gpb{position:absolute;bottom:0;left:0;width:52%;aspect-ratio:3/4;overflow:hidden;background:#8A9A88;border:4px solid var(--cream)}
+.gpb img{width:100%;height:100%;object-fit:cover;display:block}
+.goa-text .para{margin-top:0}
+.location-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.loc-tag{font-family:'Jost',sans-serif;font-weight:300;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--charcoal);border:1px solid rgba(42,37,32,.2);padding:7px 14px}
+
+/* TEAM */
+#team{padding:70px 0 12px;background:#fff}
+.team-intro{text-align:center;margin-bottom:52px}
+.team-placeholder{background:var(--stone);padding:52px 40px;text-align:center;margin-bottom:40px}
+.team-coming{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--grey);letter-spacing:.04em}
+.team-note{padding-top:8px;text-align:center}
+
+/* CONNECT */
+#connect{padding:70px 0 12px;background:var(--stone)}
+.connect-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-top:52px}
+.connect-text .para{max-width:420px}
+form{display:flex;flex-direction:column;gap:16px}
+input,select,textarea{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(42,37,32,.2);padding:12px 0;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--charcoal);outline:none;transition:border-color .3s}
+input:focus,select:focus,textarea:focus{border-bottom-color:var(--red)}
+input::placeholder,textarea::placeholder{color:var(--grey);font-weight:600}
+select{color:var(--grey);font-weight:600;appearance:none;cursor:pointer}
+textarea{resize:none;height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.submit-btn{margin-top:8px;background:transparent;border:1px solid rgba(168,78,34,.4);padding:14px 32px;font-family:'Jost',sans-serif;font-weight:300;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--red);cursor:pointer;transition:all .3s;align-self:flex-start}
+.submit-btn:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.privacy{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.1em;color:var(--grey);margin-top:4px}
+.form-success{display:none;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--grey)}
+
+/* FOOTER */
+footer{background:var(--charcoal);padding:60px 40px 40px}
+.footer-inner{max-width:1100px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,.08)}
+.footer-brand .brand-name{font-family:'EB Garamond',serif;font-size:22px;letter-spacing:.12em;text-transform:lowercase;color:var(--cream)}
+.footer-brand .brand-tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(245,240,232,.45);margin-top:4px}
+.footer-col h4{font-family:'Jost',sans-serif;font-weight:300;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(245,240,232,.3);margin-bottom:14px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-col ul li a{font-family:'Cormorant Garamond',serif;font-size:15px;color:rgba(245,240,232,.55);text-decoration:none;transition:color .3s}
+.footer-col ul li a:hover{color:var(--cream)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px}
+.footer-bottom p{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.15em;color:rgba(245,240,232,.25)}
+.footer-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(245,240,232,.3)}
+
+/* RESPONSIVE */
+@media(max-width:860px){
+  #ecosystem .wrap > div{grid-template-columns:1fr!important}
+  nav{padding:14px 20px}
+  .nav-links{display:none}
+  .ham{display:flex}
+  .wrap{padding:0 20px}
+  .about-grid,.retreat-grid,.eco-grid,.homes-grid,.how-grid,.prac-grid,.connect-grid,.goa-grid{grid-template-columns:1fr}
+  #homes .wrap > div{grid-template-columns:1fr!important}
+  .home-img-thumb{left:0}
+  .goa-photos{height:300px}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .form-row{grid-template-columns:1fr}
+}
+
+/* HOME TEXT */
+.home-text{display:flex;flex-direction:column;gap:0}
+.home-text .para{max-width:520px}
+</style>
+</head>
+<body>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mob">
+  <button class="mob-close" onclick="cm()">✕</button>
+  <a href="#about"         onclick="cm()">About</a>
+  <a href="#retreats"      onclick="cm()">Retreats</a>
+  <a href="#homes"         onclick="cm()">Homes</a>
+  <a href="#practitioners" onclick="cm()">Practitioners</a>
+  <a href="#team"          onclick="cm()">Team</a>
+  <a href="#connect"       onclick="cm()">Connect</a>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="brand">
+    <div class="brand-name">goawaters</div>
+    <div class="brand-tag">built for stillness</div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#retreats">Retreats</a></li>
+    <li><a href="#homes">Homes</a></li>
+    <li><a href="#practitioners">Practitioners</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#connect" class="nav-btn">Connect</a></li>
+  </ul>
+  <div class="ham" onclick="cm()"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-img">
+    <img src="images/hero.jpg" alt="Goa landscape" loading="eager"/>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-name">goawaters</div>
+    <svg class="hero-line" width="320" height="14" viewBox="0 0 320 14">
+      <defs><linearGradient id="hl" x1="0%" x2="100%">
+        <stop offset="0%" stop-color="#A84E22" stop-opacity="0"/>
+        <stop offset="8%" stop-color="#A84E22" stop-opacity="0.95"/>
+        <stop offset="50%" stop-color="#A84E22" stop-opacity="1"/>
+        <stop offset="88%" stop-color="#A84E22" stop-opacity="0.82"/>
+        <stop offset="100%" stop-color="#A84E22" stop-opacity="0"/>
+      </linearGradient></defs>
+      <path d="M3,9 C20,8.3 48,5.8 84,4.8 C112,4 134,4.2 158,5 C184,6 204,7.8 226,8.8 C244,9.6 264,10 310,9.5 C298,10.8 276,11.8 252,11.5 C228,11.2 204,10.3 178,9.4 C153,8.5 130,8 104,8.5 C76,9 48,10.5 15,12 C9,11.2 3,10 3,9Z" fill="url(#hl)"/>
+    </svg>
+    <div class="hero-sub">
+      <span>A wellness ecosystem rooted in Goa.</span>
+    </div>
+    <div class="hero-breath">where goa breathes</div>
+  </div>
+  <div class="scroll-hint">
+    <span>scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- OUR BELIEF -->
+<section id="belief">
+  <div class="wrap">
+    <div class="belief-inner fi">
+      <span class="label fi">Our Belief</span>
+      <span class="rule fi d1"></span>
+      <div class="belief-statement fi d1">
+        A tree builds its life right where it stands. Roots deep. Branches reaching. Never needing to move, building one quiet ring of strength at a time.
+      </div>
+      <p class="para fi d2">Goawaters is a proposed wellness ecosystem rooted in Goa. Spaces, healing centres and personal homes — each designed with nature, wellbeing and the human spirit as the first consideration.</p>
+      <div class="belief-statement fi d3">
+        We offer luxury but defined as Stillness — the most essential quality a space can offer. True wellness of body, mind and spirit in coordination — a state of inner harmony that holds steady even as life moves around it.
+      </div>
+      <p class="para belief-close fi d4">Goawaters is rooted in Goa. Unhurried. Intentional. In stillness.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="aimg fi">
+        <img src="images/coast.jpg" alt="Goa coast"/>
+      </div>
+      <div class="about-text">
+        <span class="label fi">Who We Are</span>
+        <h2 class="heading fi d1">We don't build projects.<br>We build places that heal.</h2>
+        <span class="rule fi d2"></span>
+        <div class="belief-statement fi d2">
+          Stillness is not a luxury. It is the most essential quality a space can offer. True wellness is body, mind and spirit in coordination — a state of inner harmony that holds steady even as life moves around it.
+        </div>
+        <p class="para fi d3">Goawaters is a proposed wellness ecosystem rooted in Goa. Spaces, centres and homes — each designed with nature, wellbeing and the human spirit as the first consideration. We are not a developer that added a spa, and not a wellness brand that discovered real estate. We are something quietly different: a company that believes the places we inhabit should restore us, not just shelter us.</p>
+        <p class="para fi d3" style="margin-top:14px">Every initiative we propose begins with the same question: <em>does this belong here, and does it serve the people who will live, heal and grow within it?</em></p>
+        <ul class="values-list fi d4">
+          <li>Wellness and nature before everything else</li>
+          <li>Spirituality as a design principle, not a programme</li>
+          <li>Community over transaction</li>
+          <li>Goa's heritage, honoured in every choice</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ECOSYSTEM -->
+<section id="ecosystem">
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center" class="fi">
+      <div>
+        <span class="label">What We Are Building</span>
+        <h2 class="heading">One belief.<br>Many expressions.</h2>
+        <span class="rule"></span>
+        <p class="para">We work at the intersection of wellness, nature and spirituality. Everything we do in Goa grows from the same root — the belief that a space should restore the people within it, not merely accommodate them.</p>
+        <p class="para" style="margin-top:16px">The form each project takes will follow the land, the opportunity and the right partners. It may be a large retreat, a small healing centre, a mindful home or a piece of land held with intention. What will not change is the philosophy behind it.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div style="padding:32px 36px;background:#fff;border-left:2px solid var(--red)">
+          <div style="font-family:'Jost',sans-serif;font-weight:600;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--red);margin-bottom:10px">Wellness Spaces</div>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.75;color:var(--grey)">Retreats and healing centres — large sanctuaries or smaller themed spaces. Themes may include yoga and breathwork, Ayurveda, meditation, sound and devotional practice, creative arts and conscious cooking.</p>
+        </div>
+        <div style="padding:32px 36px;background:#fff;border-left:2px solid var(--red)">
+          <div style="font-family:'Jost',sans-serif;font-weight:600;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--red);margin-bottom:10px">Mindful Homes</div>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.75;color:var(--grey)">Homes and communities designed around nature, stillness and conscious living — for those who want to live within this world, not just visit it.</p>
+        </div>
+        <div style="padding:32px 36px;background:#fff;border-left:2px solid var(--red)">
+          <div style="font-family:'Jost',sans-serif;font-weight:600;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--red);margin-bottom:10px">The Land</div>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.75;color:var(--grey)">Verified land in select Goa locations for those who wish to build their own home within this ecosystem, with as much or as little of our involvement as they prefer.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RETREATS -->
+<section id="retreats">
+  <div class="wrap">
+    <div class="retreats-intro fi">
+      <span class="label">Our Retreats</span>
+      <h2 class="heading">Places to arrive<br>and not want to leave</h2>
+      <span class="rule c"></span>
+      <p class="para" style="text-align:center;margin:0 auto">Two retreat concepts we are developing in Goa — each distinct in character and honest in intent. Details and timelines will follow as the thinking matures.</p>
+    </div>
+    <div class="retreat-grid fi d2">
+
+      <div class="retreat-card">
+        <span class="retreat-tag">Proposed · Coming up in Goa</span>
+        <div class="retreat-title">Coastal Sanctuary</div>
+        <div class="retreat-sub">A retreat where land meets sea</div>
+        <div class="retreat-rule"></div>
+        <p class="retreat-body">Intimate in scale and communal in spirit. Built around six pillars: Rest, Nourish, Move, Restore, Create and Connect. Guests move through a rhythm shaped by their own intention rather than a fixed schedule. Not a spa resort and not a yoga camp — something quieter and more lasting, where ocean, nature, food and human warmth come together in a way that feels unhurried and deeply personal.</p>
+        <span class="retreat-cta">Register Interest →</span>
+      </div>
+
+      <div class="retreat-card">
+        <span class="retreat-tag">Proposed · Vision</span>
+        <div class="retreat-title">Further Retreats</div>
+        <div class="retreat-sub">Hillside, forest or village — shaped by the land</div>
+        <div class="retreat-rule"></div>
+        <p class="retreat-body">As the ecosystem grows, we envision additional retreat spaces across Goa — smaller or larger, coastal or inland — each shaped by the land it sits on and the community it serves. These may take the form of hillside sanctuaries, forest retreats or village-based healing spaces. Details will emerge as the right locations and partnerships take shape.</p>
+        <span class="retreat-cta">Register Interest →</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HOMES -->
+<section id="homes">
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:1fr 1.35fr;gap:80px;align-items:start" class="fi">
+      <div class="home-text">
+        <span class="label fi" style="font-weight:600">Of this place. For this place.</span>
+        <h2 class="heading fi d1">Live within<br>the stillness</h2>
+        <span class="rule fi d2"></span>
+        <p class="para fi d2">There are parts of Goa where the pace of things is still measured in tides and seasons — where cashew canopy breaks over laterite hills, old village rhythms remain and the sea is never far from thought. We work in these places.</p>
+        <p class="para fi d2" style="font-style:italic;color:var(--charcoal);margin-top:10px">"The part of Goa that stays."</p>
+        <div class="location-tags fi d3">
+          <span class="loc-tag">Siolim</span>
+          <span class="loc-tag">Parra</span>
+          <span class="loc-tag">Anjuna</span>
+          <span class="loc-tag">Pernem</span>
+          <span class="loc-tag">Saligao</span>
+          <span class="loc-tag">Mandrem</span>
+          <span class="loc-tag">Siridao</span>
+        </div>
+        <span class="rule fi d3" style="margin-top:24px"></span>
+        <p class="para fi d3" style="margin-top:20px">Luxury is a word we use carefully. Not what a space contains, but what it creates in you — stillness, calm and the rare feeling of being exactly where you belong. Not the luxury of more. The luxury of enough.</p>
+        <p class="para fi d3" style="margin-top:14px">For those who want more than a visit, we are proposing a small number of homes and communities across Goa — each designed around nature, silence and conscious living, and each an expression of this idea.</p>
+        <div class="home-features fi d3">
+          <div class="home-feature">Materials chosen for honesty — laterite, wood, natural stone</div>
+          <div class="home-feature">Orientation chosen for light, air and quiet</div>
+          <div class="home-feature">Gardens that give back to the land</div>
+          <div class="home-feature">Communities small enough to know each other</div>
+          <div class="home-feature">Wellness integrated at design stage, not added after</div>
+        </div>
+        <p class="para fi d4" style="margin-top:24px;font-style:italic;border-left:2px solid rgba(168,78,34,.3);padding-left:16px">For those who wish to go further — we also offer verified land in select locations for those who want to build their own home within this ecosystem. We can be as involved or as hands-off as you prefer, from a clean land transaction to a fully managed build.</p>
+      </div>
+      <div class="home-img-stack fi d2">
+        <div class="home-img-main">
+          <img src="images/villa.webp" alt="Wellness villa"/>
+        </div>
+        <div class="home-img-thumb">
+          <img src="images/villa-thumb.jpg" alt="Goa home"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section id="how">
+  <div class="wrap">
+    <div class="how-grid">
+      <div class="how-intro fi">
+        <span class="label">Our Philosophy</span>
+        <h2 class="heading">Built for stillness.<br>Designed to last.</h2>
+        <span class="rule"></span>
+        <p class="para">These are not principles arrived at through branding. They are the conclusions of thinking carefully about what Goa's land deserves and what the people who inhabit our spaces need.</p>
+      </div>
+      <div class="how-principles fi d2">
+        <div class="principle">
+          <span class="p-num">01</span>
+          <div class="p-body">
+            <div class="p-title">Nature First</div>
+            <p class="p-text">We choose land for what it already is. The light, the shade, the trees that took decades to grow and the water beneath the ground. Every project forms around what is present and never over it.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <span class="p-num">02</span>
+          <div class="p-body">
+            <div class="p-title">Wellness by Design</div>
+            <p class="p-text">Not a feature added at the end. The orientation of a room, the path between spaces, the quality of morning light and evening quiet — wellbeing is the consequence of a thousand considered decisions made before the first stone is placed.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <span class="p-num">03</span>
+          <div class="p-body">
+            <div class="p-title">Spirituality as Architecture</div>
+            <p class="p-text">Our spaces should invite reflection and not just occupation. A gathering space that holds silence. A garden that asks you to slow down. A home whose proportions feel human and calm.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <span class="p-num">04</span>
+          <div class="p-body">
+            <div class="p-title">Small by Intention</div>
+            <p class="p-text">Every project has a ceiling on scale. A retreat that knows its guests. A centre that knows its practitioners. A home that knows its neighbours. Nothing here that cannot be held well.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <span class="p-num">05</span>
+          <div class="p-body">
+            <div class="p-title">Community, Not Transaction</div>
+            <p class="p-text">The people who live, heal and work within our spaces are not customers. They are a community chosen for alignment with the land, the ethos and with each other.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRACTITIONERS -->
+<section id="practitioners">
+  <div class="wrap">
+    <span class="label fi">Join the Ecosystem</span>
+    <h2 class="heading fi d1">Are you a wellness<br>practitioner or operator?</h2>
+    <span class="rule fi d2"></span>
+    <div class="prac-grid">
+      <div class="fi d2">
+        <p class="para">As our plans take shape, we are looking to connect with aligned practitioners, facilitators and operators who might be part of this ecosystem — at our retreats, within our centres and in the communities we hope to create.</p>
+        <p class="para" style="margin-top:14px">We are not looking for vendors. We are looking for people who share a belief in what wellness can be and who want to bring their practice into spaces designed to hold it well.</p>
+        <ul class="prac-list">
+          <li class="prac-item">Yoga teachers and movement facilitators</li>
+          <li class="prac-item">Ayurvedic doctors and therapists</li>
+          <li class="prac-item">Meditation and breathwork guides</li>
+          <li class="prac-item">Sound healers and musicians</li>
+          <li class="prac-item">Psychotherapists and counsellors</li>
+          <li class="prac-item">Creative arts facilitators</li>
+          <li class="prac-item">Conscious chefs and nutrition practitioners</li>
+          <li class="prac-item">Retreat designers and wellness operators</li>
+          <li class="prac-item">Investors aligned with conscious living</li>
+        </ul>
+        <p class="prac-note">We are deliberate about who we work with. We respond to every message.</p>
+        <a href="#connect" class="prac-cta">Tell us about yourself →</a>
+      </div>
+      <div class="prac-img fi d3">
+        <img src="images/practice.jpg" alt="Wellness space"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="wrap">
+    <div class="team-intro">
+      <span class="label fi">Team & Partners</span>
+      <h2 class="heading fi d1">The people<br>behind the work</h2>
+      <span class="rule c fi d2"></span>
+      <p class="para fi d2" style="margin:0 auto;text-align:center;max-width:520px">Goawaters is built around people who share a belief in doing things the right way — in Goa, for Goa. Profiles and partnerships will be shared here as they take shape.</p>
+    </div>
+    <div class="team-placeholder fi d3">
+      <p class="team-coming">Profiles and partnerships coming soon.</p>
+    </div>
+    <div class="team-note fi d4">
+      <span class="rule c"></span>
+      <p class="para" style="font-style:italic;color:var(--grey);text-align:center;margin:0 auto">We are deliberate about who we work with. Full team and partner profiles will be shared here as the work unfolds.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONNECT -->
+<section id="connect">
+  <div class="wrap">
+    <div class="connect-grid">
+      <div class="connect-text">
+        <span class="label fi">Connect</span>
+        <h2 class="heading fi d1">If this resonates</h2>
+        <span class="rule fi d2"></span>
+        <p class="para fi d2">Whether you are looking for healing, a home, a place to bring your practice — or simply want to understand more — we would like to hear from you.</p>
+        <p class="para fi d3" style="margin-top:14px;font-style:italic">We respond to every message.</p>
+      </div>
+      <div class="fi d2">
+        <form id="gw-form" onsubmit="submitForm(event)">
+          <div class="form-row">
+            <input type="text" placeholder="First Name" required/>
+            <input type="text" placeholder="Last Name"/>
+          </div>
+          <input type="email" placeholder="Email"/>
+          <input type="tel" placeholder="Phone / WhatsApp"/>
+          <select>
+            <option value="" disabled selected>I am interested as</option>
+            <option>A retreat guest or wellness seeker</option>
+            <option>A wellness practitioner or operator</option>
+            <option>Interested in a wellness home</option>
+            <option>A development or investment partner</option>
+            <option>I would like to understand more</option>
+          </select>
+          <select>
+            <option value="" disabled selected>Area of interest</option>
+            <option>Coastal Sanctuary retreat</option>
+            <option>Hillside Sanctuary retreat</option>
+            <option>Wellness Centres</option>
+            <option>Wellness Homes</option>
+            <option>Practitioner partnership</option>
+            <option>Investment or development</option>
+          </select>
+          <textarea placeholder="Tell us what brought you here"></textarea>
+          <button type="submit" class="submit-btn">Send Message</button>
+          <p class="privacy">Your details are held privately. We do not share or market to our list.</p>
+        </form>
+        <div class="form-success" id="form-success">Thank you. We will be in touch.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="brand-name">goawaters</div>
+        <div class="brand-tag">built for stillness</div>
+      </div>
+      <div class="footer-col">
+        <h4>Retreats</h4>
+        <ul>
+          <li><a href="#retreats">Coastal Sanctuary</a></li>
+          <li><a href="#retreats">Hillside Sanctuary</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Centres & Homes</h4>
+        <ul>
+          <li><a href="#homes">Wellness Homes</a></li>
+          <li><a href="#practitioners">Practitioners</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#how">Philosophy</a></li>
+          <li><a href="#team">Team & Partners</a></li>
+          <li><a href="#connect">Connect</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Goawaters. All rights reserved. Goa, India.</p>
+      <span class="footer-tagline">Working with the land of Goa. With care, and with conscience.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('solid', window.scrollY > 60);
+});
+
+function cm() {
+  document.getElementById('mob').classList.toggle('open');
+}
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+setTimeout(function(){
+  document.querySelectorAll('.fi:not(.vis)').forEach(function(el){ el.classList.add('vis'); });
+}, 2500);
+
+function submitForm(e) {
+  e.preventDefault();
+  document.getElementById('gw-form').style.display = 'none';
+  document.getElementById('form-success').style.display = 'block';
+}
+</script>
+</body>
+</html>
