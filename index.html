@@ -676,9 +676,12 @@ setTimeout(function(){
   document.querySelectorAll('.fi:not(.vis)').forEach(function(el){ el.classList.add('vis'); });
 }, 2500);
 
-// Number obfuscated — split so it cannot be scraped as plain text
-var _a = '91838', _b = '386', _c = '2028';
-var _n = _a + _b + _c;
+// Number kept inside a closure and split into short fragments,
+// so it never appears as plain text or as a global variable.
+function gwNumber() {
+  var _a = '91838', _b = '386', _c = '2028';
+  return _a + _b + _c;
+}
 
 document.getElementById('gw-form').addEventListener('submit', function(e) {
   e.preventDefault();
@@ -693,8 +696,8 @@ document.getElementById('gw-form').addEventListener('submit', function(e) {
   if (msg) text += 'Message: ' + encodeURIComponent(msg) + '%0A';
   text += '%0ASent from goawaters.com';
 
-  var url = 'https://wa.me/' + _n + '?text=' + text;
-  window.open(url, '_blank');
+  var url = 'https://wa.me/' + gwNumber() + '?text=' + text;
+  window.open(url, '_blank', 'noopener,noreferrer');
 
   document.getElementById('gw-form').style.display = 'none';
   document.getElementById('gw-success').style.display = 'block';
